@@ -6,7 +6,8 @@
   "type": "commonjs",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "vercel": "vercel dev"
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +15,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "nodemailer": "^6.9.11",
+    "vercel": "^33.5.5",
     "express": "^4.18.3"
   }
 }

@@ -9,10 +9,17 @@ const port = process.env.PORT||process.env.SERVER_PORT;
 const MAIL_PASS = process.env.MAIL_PASS
 
 app.use(bodyParser.json());
-app.use(express.static('build'))
+// app.use(express.static('build'));
 app.use(cors());
 
+app.get('/',(req,res) => {
+    res.json({
+        message:"hello, this is a backend web for sending checking mail from ziqing-feng",
+    });
+})
+
 app.post('/api/contact', async (req, res) => {
+  
   const { name, email, message } = req.body;
 
   console.log(req.body);
@@ -29,16 +36,26 @@ app.post('/api/contact', async (req, res) => {
     }
   });
 
-  const mailOptions = {
+  const guestMailOptions = {//custom的自动回复mail
     from: 'fengziqing970202@gmail.com',
     to: email,
     subject: '【HARUKO FENG】Thank you for reaching out!',
     text: `Dear ${name},\n\nThank you for reaching out. I will get back to you as soon as possible.\n\nBest regards,\nZiQing Feng\n\n your mail content is \n-------------------------------\n ${message}\n${email}\n${name}`,
   };
 
+  const hostMailOptions = {//haru 我自己的mail提醒
+    from:'fengziqing970202@gmail.com',
+    to:'fengziqing970202@gmail.com',
+    subject:`【Haruko Portfolio new message notice】 ${name}`,
+    text: `message: \n${message}\n mail:\n${email}\n name:\n${name}`,
+  };
+
   try {
-    await transporter.sendMail(mailOptions);
-    console.log('Confirmation email sent.');
+    await transporter.sendMail(guestMailOptions);
+    console.log('guest Confirmation email sent.');
+
+    await transporter.sendMail(hostMailOptions);
+    console.log('host email sent.');
 
     // Handle saving the message to a database or other tasks as needed
 
@@ -52,3 +69,5 @@ app.post('/api/contact', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+module.exports = app;
