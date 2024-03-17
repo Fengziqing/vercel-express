@@ -5,33 +5,32 @@ const nodemailer = require('nodemailer');
 const cors = require('cors');
 
 const app = express();
-const port = process.env.PORT||process.env.SERVER_PORT;
+const port = 3000 || process.env.SERVER_PORT;
 const MAIL_PASS = process.env.MAIL_PASS
 
 app.use(bodyParser.json());
-// app.use(express.static('build'));
+// accept frontend POST and GET request, https://ziqingfeng.vercel.app is front end website address
 app.use(cors(
-   {
-    origin:["https://ziqingfeng.vercel.app"],
-    methods:["POST","GET"],
+  {
+    origin: ["https://ziqingfeng.vercel.app"],
+    methods: ["POST", "GET"],
     credentials: true
-   }
+  }
 ));
 
-app.get('/',(req,res) => {
-    res.json({
-        message:"hello, this is a backend web for sending checking mail from ziqing-feng",
-    });
+//backend infromation sentence
+app.get('/', (req, res, next) => {
+  res.json({
+    message: "hello, this is a backend web for sending checking mail from ziqing-feng",
+  });
 })
 
-app.post('/api/contact', async (req, res) => {
-  
+//handle send email request
+app.post('/api/contact', async (req, res, next) => {
+
   const { name, email, message } = req.body;
 
   console.log(req.body);
-  if(!email){
-    res.status(404).json({ success: false, message: 'email address is not correct.'});
-  }
 
   // Send confirmation email
   const transporter = nodemailer.createTransport({
@@ -42,35 +41,41 @@ app.post('/api/contact', async (req, res) => {
     }
   });
 
-  const guestMailOptions = {//custom的自动回复mail
+  //custom的自动回复mail
+  const guestMailOptions = {
     from: 'fengziqing970202@gmail.com',
     to: email,
     subject: '【HARUKO FENG】Thank you for reaching out!',
     text: `Dear ${name},\n\nThank you for reaching out. I will get back to you as soon as possible.\n\nBest regards,\nZiQing Feng\n\n your mail content is \n-------------------------------\n ${message}\n${email}\n${name}`,
   };
 
-  const hostMailOptions = {//haru 我自己的mail提醒
-    from:'fengziqing970202@gmail.com',
-    to:'fengziqing970202@gmail.com',
-    subject:`【Haruko Portfolio new message notice】 ${name}`,
+  //haru 我自己的mail提醒
+  const hostMailOptions = {
+    from: 'fengziqing970202@gmail.com',
+    to: 'fengziqing970202@gmail.com',
+    subject: `【Haruko Portfolio new message notice】 ${name}`,
     text: `message: \n${message}\n mail:\n${email}\n name:\n${name}`,
   };
 
-  try {
-    await transporter.sendMail(guestMailOptions);
-    console.log('guest Confirmation email sent.');
+  await transporter.sendMail(guestMailOptions).catch(error => next(error));
+  await transporter.sendMail(hostMailOptions).catch(error => next(error));
 
-    await transporter.sendMail(hostMailOptions);
-    console.log('host email sent.');
+  // Handle saving the message to a database or other tasks as needed
 
-    // Handle saving the message to a database or other tasks as needed
-
-    res.status(200).json({ success: true, message: 'Message sent and confirmation email sent.' });
-  } catch (error) {
-    console.error('Error sending confirmation email:', error);
-    res.status(500).json({ success: false, message: 'Error sending confirmation email.' });
-  }
+  res.status(200).json({ success: true, message: 'Message sent and confirmation email sent.' });
 });
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+// handler of requests with unknown endpoint
+app.use(unknownEndpoint);
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+  next(error)
+}
+app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
