@@ -10,7 +10,13 @@ const MAIL_PASS = process.env.MAIL_PASS
 
 app.use(bodyParser.json());
 // app.use(express.static('build'));
-app.use(cors());
+app.use(cors(
+   {
+    origin:["https://ziqingfeng.vercel.app"],
+    methods:["POST","GET"],
+    credentials: true
+   }
+));
 
 app.get('/',(req,res) => {
     res.json({
