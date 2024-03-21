@@ -30,7 +30,7 @@ app.use(cors(
 //backend infromation sentence
 app.get('/', (req, res, next) => {
   res.json({
-    message: "hello, this is a backend web for sending checking mail from ziqing-feng",
+    message: "hello, this is a backend web for sending checking mail from ziqing feng's weisite(https://ziqingfeng.vercel.app/)",
   });
 })
 
