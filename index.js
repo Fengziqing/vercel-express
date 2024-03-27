@@ -21,7 +21,7 @@ app.use(cors(
 // //local test code
 // app.use(cors(
 //   {
-//     origin: ["http://localhost:3000"],
+//     origin: ["http://localhost:3001"],//前端的local网址
 //     methods: ["POST"],
 //     credentials: true
 //   }
