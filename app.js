@@ -11,12 +11,7 @@ app.use(bodyParser.json());
 // accept frontend POST and GET request, https://ziqingfeng.vercel.app is front end website address
 app.use(cors(
   {
-    origin: ["https://ziqingfeng.vercel.app"],
-    methods: ["POST", "GET"],
-    credentials: true
-  },
-  {
-    origin: ["https://ziqingfeng-v2.vercel.app"],
+    origin: ["https://ziqingfeng.vercel.app","https://ziqingfeng-v2.vercel.app"],
     methods: ["POST", "GET"],
     credentials: true
   }
