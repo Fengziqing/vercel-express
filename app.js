@@ -14,6 +14,11 @@ app.use(cors(
     origin: ["https://ziqingfeng.vercel.app"],
     methods: ["POST", "GET"],
     credentials: true
+  },
+  {
+    origin: ["https://ziqingfeng-v2.vercel.app"],
+    methods: ["POST", "GET"],
+    credentials: true
   }
 ));
 // //local test code
@@ -28,6 +33,7 @@ app.use(cors(
 
 app.use('/', Router);
 
+// handler of requests with unknown endpoint
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
 
