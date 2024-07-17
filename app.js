@@ -10,6 +10,7 @@ const cors = require("cors");
 
 app.use(bodyParser.json());
 // accept frontend POST and GET request, https://ziqingfeng.vercel.app is front end website address
+
 app.use(
   cors({
     origin: [
